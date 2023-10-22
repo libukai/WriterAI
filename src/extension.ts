@@ -72,7 +72,7 @@ async function validateAPIKey() {
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Workspace settings override User settings when getting the setting.
-	if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === "" 
+	if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === ""
 		|| !(await validateAPIKey())) {
 		const apiKey = await showInputBox();
 	}
@@ -109,7 +109,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			title: "Generating AI response...",
 			cancellable: true
 		}, async () => {
-			await askAI(reply);		
+			await askAI(reply);
 		});
 	}));
 
@@ -119,7 +119,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			title: "Generating AI response...",
 			cancellable: true
 		}, async () => {
-			await aiEdit(reply);		
+			await aiEdit(reply);
 		});
 	}));
 
@@ -130,7 +130,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			cancellable: true
 		}, async () => {
 			reply.text = "Write a docstring for the above code and use syntax of the coding language to format it.";
-			await askAI(reply);		
+			await askAI(reply);
 		});
 	}));
 
@@ -205,22 +205,22 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	/**
 	 * Generates the prompt to pass to OpenAI.
-	 * Prompt includes: 
+	 * Prompt includes:
 	 * - Role play text that gives context to AI
 	 * - Code block highlighted for the comment thread
 	 * - All of past conversation history + example conversation
 	 * - User's new question
 	 * @param question
-	 * @param thread 
-	 * @returns 
+	 * @param thread
+	 * @returns
 	 */
 	async function generatePromptV1(question: string, thread: vscode.CommentThread) {
 		const rolePlay =
 			"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
 		const codeBlock = await getCommentThreadCode(thread);
-		
+
 		let conversation = "Human: Who are you?\n\nAI: I am a intelligent AI chatbot\n\n";
-		
+
 		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
 
 		for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {
@@ -232,26 +232,26 @@ export async function activate(context: vscode.ExtensionContext) {
 		}
 		conversation += `Human: ${question}\n\nAI: `;
 
-		return rolePlay + "\n```\n" + codeBlock + "\n```\n\n\n" + conversation; 
+		return rolePlay + "\n```\n" + codeBlock + "\n```\n\n\n" + conversation;
 	}
 
 	/**
 	 * Generates the prompt to pass to OpenAI ChatGPT API.
-	 * Prompt includes: 
+	 * Prompt includes:
 	 * - Role play text that gives context to AI
 	 * - Code block highlighted for the comment thread
 	 * - All of past conversation history + example conversation
 	 * - User's new question
 	 * @param question
-	 * @param thread 
-	 * @returns 
+	 * @param thread
+	 * @returns
 	 */
 	async function generatePromptChatGPT(question: string, thread: vscode.CommentThread) {
 		const messages: ChatCompletionRequestMessage[] = [];
 		const rolePlay =
 			"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
 		const codeBlock = await getCommentThreadCode(thread);
-		
+
 		messages.push({"role" : "system", "content" : rolePlay + "\nCode:\n```\n" + codeBlock + "\n```"});
 		messages.push({"role" : "user", "content" : "Who are you?"});
 		messages.push({"role" : "assistant", "content" : "I am a intelligent and helpful AI chatbot."});
@@ -268,20 +268,20 @@ export async function activate(context: vscode.ExtensionContext) {
 		messages.push({"role" : "user", "content" : `${question}`});
 
 
-		return messages; 
+		return messages;
 	}
 
 	/**
 	 * Generates the prompt to pass to OpenAI.
 	 * Note: Not as performant as V1 but consumes less tokens per request.
-	 * Prompt includes: 
+	 * Prompt includes:
 	 * - Role play text that gives context to AI
 	 * - Code block highlighted for the comment thread
 	 * - An example conversation to give the AI an example. "Human: Who are you?\nAI: I am a intelligent AI chatbot\n";
 	 * - User's new question
 	 * @param question
-	 * @param thread 
-	 * @returns 
+	 * @param thread
+	 * @returns
 	 */
 	function generatePromptV2(question: string, thread: vscode.CommentThread) {
 		const rolePlay =
@@ -290,16 +290,16 @@ export async function activate(context: vscode.ExtensionContext) {
 			+ " Use markdown syntax for things like headings, lists, colored text, code blocks, highlights etc. Make sure not to mention markdown or stying in your actual response."
 			+ " Try to write code inside a single code block if possible)";
 		const codeBlock = getCommentThreadCode(thread);
-		
+
 		let conversation = "Human: Who are you?\n\nAI: I am a intelligent AI chatbot\n\n";
 		conversation += `Human: ${question}\n\nAI: `;
-		return rolePlay + "\n" + codeBlock + "\n\n\n" + conversation; 
+		return rolePlay + "\n" + codeBlock + "\n\n\n" + conversation;
 	}
 
 	/**
 	 * Gets the highlighted code for this comment thread
 	 * @param thread
-	 * @returns 
+	 * @returns
 	 */
 	async function getCommentThreadCode(thread: vscode.CommentThread) {
 		const document = await vscode.workspace.openTextDocument(thread.uri);
@@ -312,86 +312,63 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * The question + conversation history + code block then gets used
 	 * as input to call the OpenAI API to get a response.
 	 * The new humna question and AI response then gets added to the thread.
-	 * @param reply 
+	 * @param reply
 	 */
 	async function askAI(reply: vscode.CommentReply) {
 		const question = reply.text.trim();
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('scribeai').get('models') + "";
-		let prompt = "";
 		let chatGPTPrompt: ChatCompletionRequestMessage[] = [];
-		if (model === "ChatGPT" || model === "gpt-4") {
-			chatGPTPrompt = await generatePromptChatGPT(question, thread);
-		} else {
-			prompt = await generatePromptV1(question, thread);
-		}
+		chatGPTPrompt = await generatePromptChatGPT(question, thread);
 		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, { name: 'VS Code', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
-		
-		// If openai is not initialized initialize it with existing API Key 
+
+		// If openai is not initialized initialize it with existing API Key
 		// or if doesn't exist then ask user to input API Key.
 		if (openai === undefined) {
 			if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === '') {
 				const apiKey = await showInputBox();
 			}
-		
+
 			openai = new OpenAIApi(new Configuration({
 				apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
 			}));
 		}
-		if (model === "ChatGPT" || model === "gpt-4") {
-			const response = await openai.createChatCompletion({
-				model: (model === "ChatGPT" ? "gpt-3.5-turbo" : "gpt-4"),
-				messages: chatGPTPrompt,
-				temperature: 0,
-				max_tokens: 1000,
-				top_p: 1.0,
-				frequency_penalty: 1,
-				presence_penalty: 1,
-			});
+		const response = await openai.createChatCompletion({
+			model: (model === "ChatGPT" ? "gpt-3.5-turbo" : "gpt-4"),
+			messages: chatGPTPrompt,
+			temperature: 0,
+			max_tokens: 1000,
+			top_p: 1.0,
+			frequency_penalty: 1,
+			presence_penalty: 1,
+		});
 
-			const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occured. Please try again...';
-			const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'Scribe AI', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
-			thread.comments = [...thread.comments, AIComment];
-		} else {
-			const response = await openai.createCompletion({
-				model: model,
-				prompt: prompt,
-				//prompt: generatePromptV2(question, thread),
-				temperature: 0,
-				max_tokens: 500,
-				top_p: 1.0,
-				frequency_penalty: 1,
-				presence_penalty: 1,
-				stop: ["Human:"],  // V1: "Human:"
-			});
-
-			const responseText = response.data.choices[0].text ? response.data.choices[0].text : 'An error occured. Please try again...';
-			const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'Scribe AI', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
-			thread.comments = [...thread.comments, AIComment];
-		}
+		const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occured. Please try again...';
+		const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'Scribe AI', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
+		thread.comments = [...thread.comments, AIComment];
 	}
 
 	/**
 	 * AI will edit the highlighted code based on the given instructions.
 	 * Uses the OpenAI Edits endpoint. Replaces the highlighted code
 	 * with AI generated code. You can undo to go back.
-	 * 
-	 * @param reply 
-	 * @returns 
+	 *
+	 * @param reply
+	 * @returns
 	 */
 	async function aiEdit(reply: vscode.CommentReply) {
 		const question = reply.text.trim();
 		const code = await getCommentThreadCode(reply.thread);
 		const thread = reply.thread;
 
-		// If openai is not initialized initialize it with existing API Key 
+		// If openai is not initialized initialize it with existing API Key
 		// or if doesn't exist then ask user to input API Key.
 		if (openai === undefined) {
 			if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === '') {
 				const apiKey = await showInputBox();
 			}
-		
+
 			openai = new OpenAIApi(new Configuration({
 				apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
 			}));
@@ -419,7 +396,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	/**
 	 * Adds a regular note. Doesn't call OpenAI API.
-	 * @param reply 
+	 * @param reply
 	 */
 	function replyNote(reply: vscode.CommentReply) {
 		const thread = reply.thread;

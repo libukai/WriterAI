@@ -212,18 +212,18 @@
 				},
 				"scribeai.models": {
 					"type": "string",
-					"default": "ChatGPT",
+					"default": "gpt-3.5-turbo-16k",
 					"enum": [
-						"text-davinci-003",
-						"ChatGPT",
+						"gpt-3.5-turbo",
+						"gpt-3.5-turbo-16k",
 						"gpt-4"
 					],
 					"enumDescriptions": [
-						"GPT-3 models can understand and generate natural language.",
-						"Large language model trained by OpenAI that is optimized for dialogue.",
-						"Large language model that performs better than ChatGPT. Only available for people that have access to GPT4."
+						"GPT-3.5 Turbo is a model specifically optimized for dialogues and is capable of understanding and generating natural language.",
+						"GPT-3.5-Turbo-16K is a version of the GPT-3.5 Turbo model with more parameters, potentially offering higher quality dialogues and text generation.",
+						"GPT-4 is the most advanced AI model to date, with stronger reasoning and cognitive abilities."
 					],
-					"markdownDescription": "Choose the OpenAI model you want to use for generating your AI responses.\n\nYou can find more details about each model and their pricing [here](https://beta.openai.com/docs/models)."
+					"markdownDescription": "Choose the OpenAI model you want to use for generating your AI responses.\n\nYou can find more details about each model and their pricing [here](https://platform.openai.com/docs/models)."
 				}
 			}
 		}
