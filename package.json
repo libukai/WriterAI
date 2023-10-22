@@ -70,8 +70,8 @@
 				"enablement": "!commentIsEmpty"
 			},
 			{
-				"command": "mywiki.genDocString",
-				"title": "Generate Docstring",
+				"command": "mywiki.extendDocString",
+				"title": "Extend",
 				"enablement": "true"
 			},
 			{
@@ -130,8 +130,8 @@
 					"when": "false"
 				},
 				{
-					"command": "mywiki.genDocString",
-					"when": "false"
+					"command": "mywiki.extendDocString",
+					"when": "true"
 				},
 				{
 					"command": "mywiki.deleteNote",
@@ -162,7 +162,7 @@
 				},
 				{
 					"command": "mywiki.askAI",
-					"group": "inline@1",
+					"group": "inline@3",
 					"when": "commentController == comment-scribeai"
 				},
 				{
@@ -171,8 +171,8 @@
 					"when": "commentController == comment-scribeai"
 				},
 				{
-					"command": "mywiki.genDocString",
-					"group": "inline@3",
+					"command": "mywiki.extendDocString",
+					"group": "inline@1",
 					"when": "commentController == comment-scribeai"
 				}
 			],
