@@ -246,7 +246,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * @param thread
 	 * @returns
 	 */
-	async function generatePromptChatGPT(question: string, thread: vscode.CommentThread) {
+	async function generatePromptOpenAI(question: string, thread: vscode.CommentThread) {
 		const messages: ChatCompletionRequestMessage[] = [];
 		const rolePlay =
 			"I want you to act as a highly intelligent AI chatbot that has deep understanding of any coding language and its API documentations. I will provide you with a code block and your role is to provide a comprehensive answer to any questions or requests that I will ask about the code block. Please answer in as much detail as possible and not be limited to brevity. It is very important that you provide verbose answers and answer in markdown format.";
@@ -318,13 +318,13 @@ export async function activate(context: vscode.ExtensionContext) {
 		const question = reply.text.trim();
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('scribeai').get('models') + "";
-		let chatGPTPrompt: ChatCompletionRequestMessage[] = [];
-		chatGPTPrompt = await generatePromptChatGPT(question, thread);
+		let OpenAIPrompt: ChatCompletionRequestMessage[] = [];
+		OpenAIPrompt = await generatePromptOpenAI(question, thread);
 		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, { name: 'VS Code', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
 
-		// If openai is not initialized initialize it with existing API Key
-		// or if doesn't exist then ask user to input API Key.
+		// If openai is not initialized it with existing API Key
+		// or doesn't exist then ask user to input API Key.
 		if (openai === undefined) {
 			if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === '') {
 				const apiKey = await showInputBox();
@@ -335,8 +335,8 @@ export async function activate(context: vscode.ExtensionContext) {
 			}));
 		}
 		const response = await openai.createChatCompletion({
-			model: (model === "ChatGPT" ? "gpt-3.5-turbo" : "gpt-4"),
-			messages: chatGPTPrompt,
+			model: model,
+			messages: OpenAIPrompt,
 			temperature: 0,
 			max_tokens: 1000,
 			top_p: 1.0,
@@ -347,6 +347,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		const responseText = response.data.choices[0].message?.content ? response.data.choices[0].message?.content : 'An error occured. Please try again...';
 		const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'Scribe AI', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, AIComment];
+
+		return responseText;
 	}
 
 	/**
@@ -358,39 +360,19 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * @returns
 	 */
 	async function aiEdit(reply: vscode.CommentReply) {
-		const question = reply.text.trim();
-		const code = await getCommentThreadCode(reply.thread);
 		const thread = reply.thread;
+		const responseText = await askAI(reply); // Add 'await' here
 
-		// If openai is not initialized initialize it with existing API Key
-		// or if doesn't exist then ask user to input API Key.
-		if (openai === undefined) {
-			if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === '') {
-				const apiKey = await showInputBox();
-			}
-
-			openai = new OpenAIApi(new Configuration({
-				apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
-			}));
-		}
-
-		const response = await openai.createEdit({
-			model: "code-davinci-edit-001",
-			input: code,
-			instruction: question,
-			temperature: 0,
-			top_p: 1.0,
-		});
-		if (response.data.choices[0].text) {
+		if (responseText !== 'An error occurred. Please try again...') {
 			const editor = await vscode.window.showTextDocument(thread.uri);
 			if (!editor) {
 				return; // No open text editor
 			}
 			editor.edit(editBuilder => {
-				editBuilder.replace(thread.range, response.data.choices[0].text + "");
+				editBuilder.replace(thread.range, responseText + "");
 			});
 		} else {
-			vscode.window.showErrorMessage('An error occured. Please try again...');
+			vscode.window.showErrorMessage('An error occurred. Please try again...');
 		}
 	}
 
