@@ -3,6 +3,9 @@
 import * as vscode from 'vscode';
 import OpenAI from 'openai';
 
+const openai = new OpenAI();
+openai.baseURL = 'https://openai.api2d.net/v1';
+
 let commentId = 1;
 
 class NoteComment implements vscode.Comment {
@@ -38,9 +41,7 @@ export async function showInputBox() {
 				return 'The API Key can not be empty';
 			}
 			try {
-				const openai = new OpenAI({
-					apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
-				});
+				openai.apiKey = text;
 				await openai.models.list();
 			} catch (err) {
 				return 'Your API key is invalid';
@@ -57,26 +58,28 @@ export async function showInputBox() {
 }
 
 async function validateAPIKey() {
-	try {
-		const openai = new OpenAI({
-			apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
-		});
-		await openai.models.list();
-	} catch (err) {
+	const apiKey: string | undefined = vscode.workspace.getConfiguration('scribeai').get('ApiKey');
+	if (apiKey === undefined || apiKey === '') {
 		return false;
+	} else {
+		try {
+			openai.apiKey = apiKey;
+			await openai.models.list();
+		} catch (err) {
+			return false;
+		}
+		return openai;
 	}
-	return true;
 }
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Workspace settings override User settings when getting the setting.
-	if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === ""
-		|| !(await validateAPIKey())) {
+	const apiKey: string | undefined = vscode.workspace.getConfiguration('scribeai').get('ApiKey');
+	if (apiKey === "" || !(await validateAPIKey())) {
 		const apiKey = await showInputBox();
+	}else {
+		const openai = validateAPIKey();
 	}
-	const openai = new OpenAI({
-		apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
-	});
 
 	// A `CommentController` is able to provide comments for documents.
 	const commentController = vscode.comments.createCommentController('comment-scribeai', 'ScribeAI Comment Controller');
@@ -105,7 +108,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			title: "生成答复中……",
 			cancellable: true
 		}, async () => {
-			await askAI(reply);
+			await askAI(reply, openai);
 		});
 	}));
 
@@ -115,7 +118,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			title: "生成答复中……",
 			cancellable: true
 		}, async () => {
-			await aiEdit(reply);
+			await aiEdit(reply, openai);
 		});
 	}));
 
@@ -126,7 +129,7 @@ export async function activate(context: vscode.ExtensionContext) {
 			cancellable: true
 		}, async () => {
 			reply.text = "帮我扩展草稿文本 👉";
-			await aiEdit(reply);
+			await aiEdit(reply, openai);
 		});
 	}));
 
@@ -251,25 +254,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * as input to call the OpenAI API to get a response.
 	 * The new human question and AI response then gets added to the thread.
 	 * @param reply
+	 * @param openai
 	 */
-	async function askAI(reply: vscode.CommentReply) {
+	async function askAI(reply: vscode.CommentReply, openai: OpenAI ) {
 		const question = reply.text.trim();
 		const thread = reply.thread;
 		const model = vscode.workspace.getConfiguration('scribeai').get('models') + "";
 		const OpenAIPrompt = await generatePromptOpenAI(question, thread);
 		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, {name: 'Libukai 👨‍💻‍', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png")}, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
-
-		// If openai is not initialized it with existing API Key
-		// or doesn't exist then ask user to input API Key.
-		if (openai === undefined) {
-			if (vscode.workspace.getConfiguration('scribeai').get('ApiKey') === '') {
-				const apiKey = await showInputBox();
-			}
-			const openai = new OpenAI({
-				apiKey: vscode.workspace.getConfiguration('scribeai').get('ApiKey'),
-			});
-		}
 
 		async function chatCompletions() {
 			const params = {
@@ -294,11 +287,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * with AI generated code. You can undo to go back.
 	 *
 	 * @param reply
+	 * @param openai
 	 * @returns
 	 */
-	async function aiEdit(reply: vscode.CommentReply) {
+	async function aiEdit(reply: vscode.CommentReply, openai: OpenAI) {
 		const thread = reply.thread;
-		const responseText = await askAI(reply); // Add 'await' here
+		const responseText = await askAI(reply, openai); // Add 'await' here
 
 		if (responseText !== 'An error occurred. Please try again...') {
 			const editor = await vscode.window.showTextDocument(thread.uri);
