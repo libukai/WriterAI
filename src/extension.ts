@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import OpenAI from 'openai';
 
 const openai = new OpenAI();
+
+// TODO: 增加配置项，让用户可以自定义第三方 baseURL
 openai.baseURL = 'https://openai.api2d.net/v1';
 
 let commentId = 1;
@@ -57,6 +59,8 @@ export async function showInputBox() {
 	return result;
 }
 
+// TODO: 增加对 baseURL 的综合测试
+// TODO: 和上面的 showInputBox() 合并
 async function validateAPIKey() {
 	const apiKey: string | undefined = vscode.workspace.getConfiguration('scribeai').get('ApiKey');
 	if (apiKey === undefined || apiKey === '') {
@@ -122,6 +126,8 @@ export async function activate(context: vscode.ExtensionContext) {
 		});
 	}));
 
+
+	// TODO: 扩展更多的预设 AI 功能
 	context.subscriptions.push(vscode.commands.registerCommand('mywiki.extendDocString', (reply: vscode.CommentReply) => {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Notification,
@@ -256,6 +262,9 @@ export async function activate(context: vscode.ExtensionContext) {
 	 * @param reply
 	 * @param openai
 	 */
+
+	// TODO: 优化展示效果，主要是头像和名称
+	// REVIEW: 学习源代码，研究是否可以更改为流式输出
 	async function askAI(reply: vscode.CommentReply, openai: OpenAI ) {
 		const question = reply.text.trim();
 		const thread = reply.thread;
