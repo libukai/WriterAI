@@ -12,7 +12,7 @@
 		"url": "https://github.com/ajikan/ScribeAI"
 	},
 	"engines": {
-		"vscode": "^1.65.0"
+		"vscode": "^1.83.1"
 	},
 	"sponsor": {
 		"url": "https://ko-fi.com/pixelperfectlabs"
