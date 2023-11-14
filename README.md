@@ -2,41 +2,41 @@
     <img src="./resources/chatbot.png" width=200>
 </div>
 
-<h1 align="center">Scribe AI</h1>
+<h1 align="center">Writer AI</h1>
 
 <h4 align="center">
-  <a href="https://github.com/ajikan/ScribeAI#-features">Features</a>
+  <a href="https://github.com/ajikan/WriterAI#-features">Features</a>
   ·
-  <a href="https://github.com/ajikan/ScribeAI#-getting-started">Getting Started</a>
+  <a href="https://github.com/ajikan/WriterAI#-getting-started">Getting Started</a>
   ·
-  <a href="https://github.com/ajikan/ScribeAI#%EF%B8%8F-support-and-gratitude">Support and Gratitude</a>
+  <a href="https://github.com/ajikan/WriterAI#%EF%B8%8F-support-and-gratitude">Support and Gratitude</a>
 </h4>
 
 <p align="center">
-    <a href="https://github.com/ajikan/ScribeAI">
-      <img src="https://img.shields.io/github/last-commit/ajikan/ScribeAI?style=for-the-badge&logo=github&color=7dc4e4&logoColor=D9E0EE&labelColor=302D41"/>
+    <a href="https://github.com/ajikan/WriterAI">
+      <img src="https://img.shields.io/github/last-commit/ajikan/WriterAI?style=for-the-badge&logo=github&color=7dc4e4&logoColor=D9E0EE&labelColor=302D41"/>
     </a>
-    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.scribeai">
-      <img src="https://img.shields.io/visual-studio-marketplace/v/AndrewZhang.scribeai?style=for-the-badge&logo=gitbook&color=8bd5ca&logoColor=D9E0EE&labelColor=302D41"/>
+    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.writerai">
+      <img src="https://img.shields.io/visual-studio-marketplace/v/AndrewZhang.writerai?style=for-the-badge&logo=gitbook&color=8bd5ca&logoColor=D9E0EE&labelColor=302D41"/>
 	</a>
-    <a href="https://github.com/ajikan/ScribeAI">
-      <img src="https://img.shields.io/github/stars/ajikan/ScribeAI?style=for-the-badge&logo=apachespark&color=eed49f&logoColor=D9E0EE&labelColor=302D41"/>
+    <a href="https://github.com/ajikan/WriterAI">
+      <img src="https://img.shields.io/github/stars/ajikan/WriterAI?style=for-the-badge&logo=apachespark&color=eed49f&logoColor=D9E0EE&labelColor=302D41"/>
     </a>
     <br>
-    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.scribeai">
-      <img src="https://img.shields.io/visual-studio-marketplace/stars/AndrewZhang.scribeai?style=for-the-badge&logo=visualstudiocode&color=ee99a0&logoColor=D9E0EE&labelColor=302D41"/>
+    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.writerai">
+      <img src="https://img.shields.io/visual-studio-marketplace/stars/AndrewZhang.writerai?style=for-the-badge&logo=visualstudiocode&color=ee99a0&logoColor=D9E0EE&labelColor=302D41"/>
     </a>
-    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.scribeai">
-      <img src="https://img.shields.io/visual-studio-marketplace/d/AndrewZhang.scribeai?style=for-the-badge&logo=webpack&color=cba6f7&logoColor=D9E0EE&labelColor=302D41"/>
+    <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.writerai">
+      <img src="https://img.shields.io/visual-studio-marketplace/d/AndrewZhang.writerai?style=for-the-badge&logo=webpack&color=cba6f7&logoColor=D9E0EE&labelColor=302D41"/>
     </a>
 </p>
 
 <p align="center">
-Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbot like ChatGPT right in VS Code! Use it as your AI programming assistant which you can talk with to understand complex code, modify and improve your code, or generate comments for your code. The possibilities are endless. To start, highlight a piece of code and click on the plus icon on the left to open up a chat and start talking with Scribe AI just like in ChatGPT! All your conversations are saved in your workspace so you can look back on them as notes.
+Writer AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbot like ChatGPT right in VS Code! Use it as your AI programming assistant which you can talk with to understand complex code, modify and improve your code, or generate comments for your code. The possibilities are endless. To start, highlight a piece of code and click on the plus icon on the left to open up a chat and start talking with Writer AI just like in ChatGPT! All your conversations are saved in your workspace so you can look back on them as notes.
 </p>
 
 <h4 align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.scribeai">🔗 VSCode Marketplace</a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=AndrewZhang.writerai">🔗 VSCode Marketplace</a>
 </h4>
 
 &nbsp;
@@ -50,7 +50,7 @@ Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbo
 
 # 📢 v1.1.5 Update
 - Official ChatGPT is finally available! OpenAI recently officially announced the release of their ChatGPT API. 
-- You can now select the ChatGPT model by going to User Settings via `Code` -> `Preferences` -> `Settings` and under `Extensions` you will find `ScribeAI` settings. Or you can just search `ScribeAI` in search box. And you will find a option to choose your model. Go ahead and choose `ChatGPT` and restart your extension by clicking on `restart your extension` in the API key settings. Now you are using ChatGPT!
+- You can now select the ChatGPT model by going to User Settings via `Code` -> `Preferences` -> `Settings` and under `Extensions` you will find `WriterAI` settings. Or you can just search `WriterAI` in search box. And you will find a option to choose your model. Go ahead and choose `ChatGPT` and restart your extension by clicking on `restart your extension` in the API key settings. Now you are using ChatGPT!
 - Notice how answers provided by ChatGPT is much more detailed and informant, it's amazing!!
 
 
@@ -116,13 +116,13 @@ Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbo
 ### 📑 Download extension from VSCode Marketplace
 - Click on the Extensions icon(Ctrl+Shift+X)
 
-- Search for `ScribeAI`
+- Search for `WriterAI`
 
 - The extension on VSCode marketplace looks like this, click the install button.
 
 	![image](https://user-images.githubusercontent.com/26835888/218777021-59781cc1-788d-47e5-93bd-be1f8336f3ec.png)
 
-- Once installation is complete, go to settings and search for `ScribeAI` to add your OpenAI API key, when you install and use ScribeAI for the first time, it will ask you for your OpenAI API key. This is used by the extension to access the API and is only sent to OpenAI.
+- Once installation is complete, go to settings and search for `WriterAI` to add your OpenAI API key, when you install and use WriterAI for the first time, it will ask you for your OpenAI API key. This is used by the extension to access the API and is only sent to OpenAI.
 
 	![OpenAI](https://user-images.githubusercontent.com/26835888/218778164-1dbc6040-d44f-46be-b4a0-45baf4779e1c.jpg)
 
@@ -132,7 +132,7 @@ Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbo
 
 - Inside the open or active editor click the ` + ` icon that often appears on the left
 
-- When you first use ScribeAI whether by `Ask AI` or `AI Edit`, it will ask you for your OpenAI API key. This is used by the extension to access the API and is only sent to OpenAI.
+- When you first use WriterAI whether by `Ask AI` or `AI Edit`, it will ask you for your OpenAI API key. This is used by the extension to access the API and is only sent to OpenAI.
 <p align="center">
   <img src="./apiKeyInput.png" />
 </p>
@@ -146,11 +146,11 @@ Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbo
 
 - Unzip the downloaded file, and open the folder with VSCode 
 
-- Go through the process elaborated above to add your OpenAI API key and setup ScribeAI for the first time
+- Go through the process elaborated above to add your OpenAI API key and setup WriterAI for the first time
 
 
 ## ⚙️ Settings
-- You can also change your API key in User Settings via `Code` -> `Preferences` -> `Settings` and under `Extensions` you will find `ScribeAI` settings. Or you can just search `ScribeAI` in search box.
+- You can also change your API key in User Settings via `Code` -> `Preferences` -> `Settings` and under `Extensions` you will find `WriterAI` settings. Or you can just search `WriterAI` in search box.
 <p align="center">
   <img src="./userSettings.png" />
 </p>
@@ -181,4 +181,4 @@ Scribe AI is a ChatGPT-like extension for VS Code. Now you can have an AI chatbo
 
 &nbsp;
 
-<p align="center">Copyright &copy; 2022-present Scribe AI Team</p>
+<p align="center">Copyright &copy; 2022-present Writer AI Team</p>

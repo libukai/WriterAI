@@ -1,45 +1,35 @@
 {
-	"name": "scribeai",
-	"displayName": "ChatGPT & GPT extension - ScribeAI",
-	"description": "🚀 Use ChatGPT & GPT right inside VSCode to enhance and automate your coding with AI-powered assistance",
-	"version": "1.2.1",
-	"publisher": "AndrewZhang",
-	"private": true,
-	"icon": "resources/chatbot.png",
-	"license": "Apache-2.0",
-	"repository": {
+	"name": "WriterAI", 
+	"displayName": "GPT extension for Writer- Writer AI", 
+	"description": "🚀 Use GPT Copilot right inside VS Code to enhance and automate your writing experence", 
+	"version": "0.0.1", 
+	"publisher": "Libukai", 
+	"private": false, 
+	"icon": "resources/chatbot.png", 
+	"license": "Apache-2.0", 
+	"repository": { 
 		"type": "git",
-		"url": "https://github.com/ajikan/ScribeAI"
+		"url": "https://github.com/libukai/WriterAI"
 	},
-	"engines": {
+	"engines": { 
 		"vscode": "^1.83.1"
 	},
-	"sponsor": {
-		"url": "https://ko-fi.com/pixelperfectlabs"
+	"sponsor": { 
+		"url": "https://aikebang.net"
 	},
-	"categories": [
-		"Programming Languages",
+	"categories": [ 
+        "Machine Learning",
 		"Snippets",
-		"Other",
-		"Machine Learning",
 		"Notebooks"
 	],
-	"keywords": [
+	"keywords": [ 
 		"chatgpt",
-		"gpt3",
-		"gpt3.5",
-		"gpt4",
+		"gpt",
 		"openai",
 		"copilot",
-		"ai",
-		"refactor",
-		"bard",
-		"completion",
-		"javascript",
-		"typescript",
-		"web development"
+		"ai"
 	],
-	"galleryBanner": {
+	"galleryBanner": { 
 		"color": "#041621",
 		"theme": "dark"
 	},
@@ -146,71 +136,71 @@
 				{
 					"command": "mywiki.deleteNote",
 					"group": "navigation",
-					"when": "commentController == comment-scribeai && !commentThreadIsEmpty"
+					"when": "commentController == comment-writerai && !commentThreadIsEmpty"
 				}
 			],
 			"comments/commentThread/context": [
 				{
 					"command": "mywiki.createNote",
 					"group": "inline@5",
-					"when": "commentController == comment-scribeai && commentThreadIsEmpty"
+					"when": "commentController == comment-writerai && commentThreadIsEmpty"
 				},
 				{
 					"command": "mywiki.replyNote",
 					"group": "inline@4",
-					"when": "commentController == comment-scribeai && !commentThreadIsEmpty"
+					"when": "commentController == comment-writerai && !commentThreadIsEmpty"
 				},
 				{
 					"command": "mywiki.askAI",
 					"group": "inline@3",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				},
 				{
 					"command": "mywiki.aiEdit",
 					"group": "inline@2",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				},
 				{
 					"command": "mywiki.extendDocString",
 					"group": "inline@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				}
 			],
 			"comments/comment/title": [
 				{
 					"command": "mywiki.editNote",
 					"group": "group@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				},
 				{
 					"command": "mywiki.deleteNoteComment",
 					"group": "group@2",
-					"when": "commentController == comment-scribeai && comment == canDelete"
+					"when": "commentController == comment-writerai && comment == canDelete"
 				}
 			],
 			"comments/comment/context": [
 				{
 					"command": "mywiki.cancelsaveNote",
 					"group": "inline@1",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				},
 				{
 					"command": "mywiki.saveNote",
 					"group": "inline@2",
-					"when": "commentController == comment-scribeai"
+					"when": "commentController == comment-writerai"
 				}
 			]
 		},
 		"configuration": {
-			"title": "ScribeAI",
+			"title": "WriterAI",
 			"properties": {
-				"scribeai.ApiKey": {
+				"writerai.ApiKey": {
 					"type": "string",
 					"default": "",
 					"scope": "application",
 					"markdownDescription": "Your personal OpenAI API key. If you don't have one, generate a new one [here](https://beta.openai.com/account/api-keys).\n\nDon't forget to [restart your extension](command:workbench.action.reloadWindow) once you finished configuring so that your extension gets loaded with the new configurations."
 				},
-				"scribeai.models": {
+				"writerai.models": {
 					"type": "string",
 					"default": "gpt-3.5-turbo-16k",
 					"enum": [

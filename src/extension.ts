@@ -35,8 +35,8 @@ export async function showInputBox() {
 	const result = await vscode.window.showInputBox({
 		ignoreFocusOut: true,
 		placeHolder: 'Your OpenAI API Key',
-		title: 'Scribe AI',
-		prompt: 'You have not set your OpenAI API key yet or your API key is incorrect, please enter your API key to use the ScribeAI extension.',
+		title: 'Writer AI',
+		prompt: 'You have not set your OpenAI API key yet or your API key is incorrect, please enter your API key to use the WriterAI extension.',
 		validateInput: async text => {
 			vscode.window.showInformationMessage(`Validating: ${text}`);
 			if (text === '') {
@@ -53,16 +53,16 @@ export async function showInputBox() {
 	});
 	vscode.window.showInformationMessage(`Got: ${result}`);
 	// Write to user settings
-	await vscode.workspace.getConfiguration('scribeai').update('ApiKey', result, true);
+	await vscode.workspace.getConfiguration('writerai').update('ApiKey', result, true);
 	// Write to workspace settings
-	//await vscode.workspace.getConfiguration('scribeai').update('ApiKey', result, false);
+	//await vscode.workspace.getConfiguration('writerai').update('ApiKey', result, false);
 	return result;
 }
 
 // TODO: 增加对 baseURL 的综合测试
 // TODO: 和上面的 showInputBox() 合并
 async function validateAPIKey() {
-	const apiKey: string | undefined = vscode.workspace.getConfiguration('scribeai').get('ApiKey');
+	const apiKey: string | undefined = vscode.workspace.getConfiguration('writerai').get('ApiKey');
 	if (apiKey === undefined || apiKey === '') {
 		return false;
 	} else {
@@ -78,15 +78,15 @@ async function validateAPIKey() {
 
 export async function activate(context: vscode.ExtensionContext) {
 	// Workspace settings override User settings when getting the setting.
-	const apiKey: string | undefined = vscode.workspace.getConfiguration('scribeai').get('ApiKey');
+	const apiKey: string | undefined = vscode.workspace.getConfiguration('writerai').get('ApiKey');
 	if (apiKey === "" || !(await validateAPIKey())) {
 		const apiKey = await showInputBox();
-	}else {
+	} else {
 		const openai = validateAPIKey();
 	}
 
 	// A `CommentController` is able to provide comments for documents.
-	const commentController = vscode.comments.createCommentController('comment-scribeai', 'ScribeAI Comment Controller');
+	const commentController = vscode.comments.createCommentController('comment-writerai', 'WriterAI Comment Controller');
 	context.subscriptions.push(commentController);
 
 	// A `CommentingRangeProvider` controls where gutter decorations that allow adding comments are shown
@@ -237,18 +237,18 @@ export async function activate(context: vscode.ExtensionContext) {
 			"我希望你能扮演一个创作经验丰富、擅长各种类型文本的作家，尤其善于用浅显易懂的文字解释清楚复杂的概念。我会给你一些我写的草稿文本，请根据我提的要求，对草稿文本进行相应的调整和优化。请尽量让文本简洁明了，优美流畅，让读者在轻松阅读的同时又能获取到明确的信息。非常重要的是，不需要做什么解释，请直接给我你调整和优化后的文本即可。如果文本中涉及到特定的格式，请以 Markdown 格式回答。";
 		const codeBlock = await getCommentThreadCode(thread);
 
-		messages.push({"role": "system", "content": rolePlay});
+		messages.push({ "role": "system", "content": rolePlay });
 
 		const filteredComments = thread.comments.filter(comment => comment.label !== "NOTE");
 
 		for (let i = Math.max(0, filteredComments.length - 8); i < filteredComments.length; i++) {
 			if (filteredComments[i].author.name === "Libukai 👨‍💻‍") {
-				messages.push({"role": "user", "content": `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				messages.push({ "role": "user", "content": `${(filteredComments[i].body as vscode.MarkdownString).value}` });
 			} else if (filteredComments[i].author.name === "Aikebang 🧠") {
-				messages.push({"role": "assistant", "content": `${(filteredComments[i].body as vscode.MarkdownString).value}`});
+				messages.push({ "role": "assistant", "content": `${(filteredComments[i].body as vscode.MarkdownString).value}` });
 			}
 		}
-		messages.push({"role": "user", "content": `${question}` + codeBlock});
+		messages.push({ "role": "user", "content": `${question}` + codeBlock });
 
 		return messages;
 	}
@@ -265,12 +265,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	// TODO: 优化展示效果，主要是头像和名称
 	// REVIEW: 学习源代码，研究是否可以更改为流式输出
-	async function askAI(reply: vscode.CommentReply, openai: OpenAI ) {
+	async function askAI(reply: vscode.CommentReply, openai: OpenAI) {
 		const question = reply.text.trim();
 		const thread = reply.thread;
-		const model = vscode.workspace.getConfiguration('scribeai').get('models') + "";
+		const model = vscode.workspace.getConfiguration('writerai').get('models') + "";
 		const OpenAIPrompt = await generatePromptOpenAI(question, thread);
-		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, {name: 'Libukai 👨‍💻‍', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png")}, thread, thread.comments.length ? 'canDelete' : undefined);
+		const humanComment = new NoteComment(new vscode.MarkdownString(question), vscode.CommentMode.Preview, { name: 'Libukai 👨‍💻‍', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, humanComment];
 
 		async function chatCompletions() {
@@ -284,7 +284,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const response = await chatCompletions();	// If chatCompletion is undefined then ask user to input API Key.
 
 		const responseText = response.choices[0].message?.content ? response.choices[0].message?.content : 'An error occurred. Please try again...';
-		const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, {name: 'Aikebang 🧠', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png")}, thread, thread.comments.length ? 'canDelete' : undefined);
+		const AIComment = new NoteComment(new vscode.MarkdownString(responseText.trim()), vscode.CommentMode.Preview, { name: 'Aikebang 🧠', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/chatbot.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		thread.comments = [...thread.comments, AIComment];
 
 		return responseText;
@@ -322,7 +322,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	 */
 	function replyNote(reply: vscode.CommentReply) {
 		const thread = reply.thread;
-		const newComment = new NoteComment(new vscode.MarkdownString(reply.text), vscode.CommentMode.Preview, {name: 'Libukai 👨‍💻', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png")}, thread, thread.comments.length ? 'canDelete' : undefined);
+		const newComment = new NoteComment(new vscode.MarkdownString(reply.text), vscode.CommentMode.Preview, { name: 'Libukai 👨‍💻', iconPath: vscode.Uri.parse("https://img.icons8.com/fluency/96/null/user-male-circle.png") }, thread, thread.comments.length ? 'canDelete' : undefined);
 		newComment.label = 'NOTE';
 		thread.comments = [...thread.comments, newComment];
 	}
